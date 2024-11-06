@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 import './App.css'
 import Table from './components/Table'
@@ -39,7 +40,6 @@ function App() {
         membershipStatus: Math.random() > 0.5 ? 'active' : 'inactive',
       }));
       setDatas(fetcedData);
-      console.log(fetcedData)
       setError(null);
     } catch (err) {
       toast.error('Failed to fetch users from API');

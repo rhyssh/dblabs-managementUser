@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
+import PropTypes from 'prop-types'; // Import PropTypes
 
 const Form = ({ onAddUser }) => {
     const [formData, setFormData] = useState({ name: '', email: '', age: '', membershipStatus: 'active' });
@@ -105,6 +106,11 @@ const Form = ({ onAddUser }) => {
             </form>
         </>
     );
+};
+
+// PropTypes validation
+Form.propTypes = {
+    onAddUser: PropTypes.func.isRequired, // Ensure the onAddUser prop is a function and is required
 };
 
 export default Form;
