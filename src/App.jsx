@@ -7,6 +7,7 @@ import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid';
 import Form from './components/Form'
 import 'react-toastify/dist/ReactToastify.css';
+// import { data } from 'autoprefixer'
 
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
     const savedUsers = JSON.parse(localStorage.getItem('users'));
     if (savedUsers && savedUsers.length > 0) {
       setDatas(savedUsers)
-      console.log(datas)
+      // console.log(datas)
     } else {
       fetchData()
     }
@@ -34,7 +35,7 @@ function App() {
       const response = await axios.get('https://api.github.com/users');
       const fetcedData = response.data.map((user) => ({
         name: user.login,
-        id: user.id,
+        id: (user.id).toString(),
         email: `${user.login}@example.com`,
         age: Math.floor(Math.random() * 50) + 18,
         membershipStatus: Math.random() > 0.5 ? 'active' : 'inactive',
@@ -67,7 +68,7 @@ function App() {
     localStorage.setItem('users', JSON.stringify(updatedUsers));
   };
 
-  // handle edit dat
+  // handle edit data
 
   // Update handleSort function
   const handleSort = (key) => {
@@ -90,14 +91,15 @@ function App() {
   return (
     <>
       <div>
-        <p className='text-start'>Tambah Data</p>
+        <h3 className='text-center text-2xl font-medium'>Management User</h3>
+        <p className='text-start text-lg font-semibold underline decoration-blue-400 '>Tambah Data</p>
         {loading ? (
           <p>Loading...</p>
         ) : error ? (
           <p>Error: {error}</p>
         ) : (<>
           <Form onAddUser={handleAddUser} />
-          <Table datas={datas} onDelete={handleDelete} onSort={handleSort} />
+          <Table datas={datas} onDelete={handleDelete} onSort={handleSort} onEdit={()=>(console.log(1))} />
         </>
         )}
 
