@@ -8,7 +8,7 @@ Sebelum menjalankan proyek, pastikan Anda telah menginstal beberapa perangkat lu
   
 - **npm**: npm (Node Package Manager) biasanya terinstal bersama Node.js. npm digunakan untuk mengelola dependensi proyek.
 
-## 2. Clone repositori
+## 2. Clone Repositori
 Langkah pertama adalah meng-clone repository ini ke mesin lokal Anda. Gunakan Git untuk meng-clone repositori.
 
 ```bash
