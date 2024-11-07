@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Form from './components/Form'
 import EditModal from './components/EditModal'
 import 'react-toastify/dist/ReactToastify.css';
+import Navbar from './components/Navbar'
 // import { data } from 'autoprefixer'
 
 
@@ -152,22 +153,23 @@ function App() {
   return (
     <>
       <div>
-        <h3 className='text-center text-2xl font-medium'>Management User</h3>
-        <p className='text-start text-lg font-semibold underline decoration-blue-400 '>Tambah Data</p>
+        <Navbar />
         {loading ? (
           <p>Loading...</p>
         ) : error ? (
           <p>Error: {error}</p>
-        ) : (<>
-          <Form onAddUser={handleAddUser} />
-          <Table datas={datas} onDelete={handleDelete} onSort={handleSort} onEdit={handleEditClick} />
-          <EditModal
-            isOpen={isModalOpen}
-            onClose={handleCloseModal}
-            onSave={handleSave}
-            userData={userToEdit}
-          />
-        </>
+        ) : (
+          <div className='max-w-[1280px] text-center m-auto my-10'>
+            <p className='text-start text-lg font-semibold underline decoration-blue-400 '>Tambah Data</p>
+            <Form onAddUser={handleAddUser} />
+            <Table datas={datas} onDelete={handleDelete} onSort={handleSort} onEdit={handleEditClick} />
+            <EditModal
+              isOpen={isModalOpen}
+              onClose={handleCloseModal}
+              onSave={handleSave}
+              userData={userToEdit}
+            />
+          </div>
         )}
 
         <ToastContainer />
