@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 const EditModal = ({ isOpen, onClose, onSave, userData }) => {
@@ -8,8 +8,19 @@ const EditModal = ({ isOpen, onClose, onSave, userData }) => {
         email: userData?.email || '',
         age: userData?.age || '',
         membershipStatus: userData?.membershipStatus || 'active',
+        id: userData?.id || '',
     });
-
+    useEffect(() => {
+        if (userData) {
+            setFormData({
+                name: userData.name || '',
+                email: userData.email || '',
+                age: userData.age || '',
+                membershipStatus: userData.membershipStatus || 'active',
+                id: userData.id || '',
+            });
+        }
+    }, [userData]);
     const [errors, setErrors] = useState({});
 
     // Handle form data change
@@ -147,7 +158,7 @@ EditModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
-    userData: PropTypes.object.isRequired,
+    userData: PropTypes.object,
 };
 
 export default EditModal;

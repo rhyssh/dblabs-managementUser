@@ -6,6 +6,7 @@ import { toast, ToastContainer } from 'react-toastify'
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid';
 import Form from './components/Form'
+import EditModal from './components/EditModal'
 import 'react-toastify/dist/ReactToastify.css';
 // import { data } from 'autoprefixer'
 
@@ -16,7 +17,8 @@ function App() {
   const [error, setError] = useState(null)
   const [sortKey, setSortKey] = useState(null)
   const [sortOrder, setSortOrder] = useState('ascending');
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userToEdit, setUserToEdit] = useState(null);
 
 
   useEffect(() => {
@@ -41,6 +43,7 @@ function App() {
         membershipStatus: Math.random() > 0.5 ? 'active' : 'inactive',
       }));
       setDatas(fetcedData);
+      localStorage.setItem('users', JSON.stringify(fetcedData));
       setError(null);
     } catch (err) {
       toast.error('Failed to fetch users from API');
@@ -53,12 +56,26 @@ function App() {
 
   // handle add data
   const handleAddUser = (user) => {
-    const id = uuidv4();
-    const newUser = { id, ...user };
-    setDatas([...datas, newUser]);
-    toast.success('User added successfully');
-    localStorage.setItem('users', JSON.stringify([...datas, newUser]));
+    try {
+      const id = uuidv4();
+      const newUser = { id, ...user, age: parseInt(user.age) };
+
+      // Tambahkan user baru ke dalam state 'datas'
+      setDatas((prevDatas) => {
+        const updatedData = [...prevDatas, newUser];
+        // Simpan data yang diperbarui ke localStorage
+        localStorage.setItem('users', JSON.stringify(updatedData));
+        return updatedData;
+      });
+
+      // Tampilkan notifikasi sukses
+      toast.success('User added successfully');
+    } catch (error) {
+      // Tangani error yang terjadi saat menambahkan user
+      toast.error(`Failed to add user: ${error.message}`);
+    }
   };
+
 
   // handle delete data
   const handleDelete = (id) => {
@@ -68,7 +85,51 @@ function App() {
     localStorage.setItem('users', JSON.stringify(updatedUsers));
   };
 
-  // handle edit data
+  // Menangani pembukaan modal
+  const handleEditClick = (user) => {
+    setUserToEdit(user);
+    setIsModalOpen(true);
+  };
+
+  // Menangani penyimpanan data yang sudah diedit
+  const handleSave = (updatedUser) => {
+
+    // Ambil data dari localStorage
+    let data = JSON.parse(localStorage.getItem('users')) || [];
+
+    // Map melalui data dan update user yang cocok berdasarkan id
+    const updatedData = data.map((user) => {
+
+      // Pastikan perbandingan ID tidak bergantung pada tipe data
+      if (user.id == updatedUser.id) {  // Perbandingan longgar di sini
+        return {
+          ...user,
+          name: updatedUser.name,
+          email: updatedUser.email,
+          age: parseInt(updatedUser.age),
+          membershipStatus: updatedUser.membershipStatus,
+        };
+      }
+      return user;
+    });
+
+
+    // Simpan data yang sudah diupdate kembali ke localStorage
+    localStorage.setItem('users', JSON.stringify(updatedData));
+
+    // Update state atau tampilkan notifikasi
+    setDatas(updatedData);
+    toast.success("User data has been successfully saved.");
+  };
+
+
+
+
+  // Menangani penutupan modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setUserToEdit(null);
+  };
 
   // Update handleSort function
   const handleSort = (key) => {
@@ -99,7 +160,13 @@ function App() {
           <p>Error: {error}</p>
         ) : (<>
           <Form onAddUser={handleAddUser} />
-          <Table datas={datas} onDelete={handleDelete} onSort={handleSort} onEdit={()=>(console.log(1))} />
+          <Table datas={datas} onDelete={handleDelete} onSort={handleSort} onEdit={handleEditClick} />
+          <EditModal
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            onSave={handleSave}
+            userData={userToEdit}
+          />
         </>
         )}
 
